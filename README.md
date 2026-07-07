@@ -215,16 +215,3 @@ curl -X POST http://localhost:8000/api/readings/import \
 | Stats    | `/api/stats/area-ranking`  | GET          | 区域排名               |
 | Stats    | `/api/stats/hourly-trend`  | GET          | 24 小时趋势            |
 | Admin    | `/api/admin/users`         | GET/POST/PUT | 用户管理               |
-
-完整 API 文档见 Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
-
-## 生产构建
-
-前端已包含生产构建产物：
-
-```bash
-# 如需重新构建
-cd noise_monitoring_system/frontend
-npm run build     # 输出到 dist/
-npm run preview   # 预览生产构建
-```

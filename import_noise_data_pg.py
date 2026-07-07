@@ -9,7 +9,7 @@ from psycopg2.extras import execute_values
 from datetime import datetime
 
 # CSV文件路径
-CSV_FILE = r'd:\course\数据库\homework\大鹏新区-噪声在线监测数据.csv'
+CSV_FILE = r'/path/to/your/data/noise_data.csv'  # 请根据实际情况修改路径
 
 # PostgreSQL 数据库连接配置 (Docker)
 DB_CONFIG = {
