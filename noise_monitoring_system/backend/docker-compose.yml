@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # PostgreSQL + TimescaleDB + PostGIS 数据库
+  db:
+    image: timescale/timescaledb-ha:pg16
+    container_name: noise_db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: noise_db
+    volumes:
+      # 数据持久化
+      - noise_db_data:/home/postgres/pgdata/data
+      # 初始化脚本 (容器首次启动时自动执行)
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d noise_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - noise_network
+
+  # pgAdmin 数据库管理工具 (可选)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: noise_pgadmin
+    restart: unless-stopped
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@noise.local
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - noise_network
+
+volumes:
+  noise_db_data:
+    name: noise_db_data
+  pgadmin_data:
+    name: noise_pgadmin_data
+
+networks:
+  noise_network:
+    name: noise_network
+    driver: bridge
